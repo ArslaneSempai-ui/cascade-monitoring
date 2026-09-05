@@ -50,7 +50,7 @@ test("l'écrasement commun : 0 à zéro, 0,63 à l'échelle, croissant, borné",
   assert.throws(() => ecraser(1, 0));
 });
 
-test("le registre porte les sept paliers du contrat, dans son ordre, aucun absent", () => {
+test("le registre porte chaque palier du contrat, dans son ordre, aucun absent", () => {
   const r = registre();
   assert.deepEqual([...r.keys()], [...PALIERS], `paliers manquants : ${absents(r).join(", ") || "aucun"}`);
   assert.deepEqual(absents(r), []);

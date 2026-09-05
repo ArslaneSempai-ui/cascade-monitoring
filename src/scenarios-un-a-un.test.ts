@@ -138,7 +138,7 @@ test("zscore : le même pic est criant sur un compte plat et banal sur un compte
   assert.ok(s > 0.99 && s <= 1, `un pic à 7 800 sigmas planchérés reste dans [0, 1] : ${s}`);
 });
 
-test("passthrough : l'aller-retour note haut, la paie dépensée note bas, et il faut les deux facteurs", () => {
+test("passthrough : l'aller-retour note haut, la paie dépensée note bas, et il faut chaque facteur", () => {
   const relais = cas("relais", [[10, 9, 20_000, "in", "wire"], [10, 16, 19_500, "out", "wire"]]);
   assert.ok(passthrough.score(relais, E) > 0.95, "entré le matin, ressorti le soir, presque tout");
   const paieDepensee = cas("paie-dep", [[1, 9, 3_000, "in", "transfer"], [8, 9, 700, "out", "card"],
@@ -154,7 +154,7 @@ test("passthrough : l'aller-retour note haut, la paie dépensée note bas, et il
   const fifo = cas("fifo", [[1, 9, 10_000, "in", "wire"], [28, 9, 10_000, "in", "wire"],
     [28, 16, 10_000, "out", "wire"]]);
   assert.ok(passthrough.score(fifo, E) < 0.5,
-    "la sortie du 28 est rattachée à l'entrée du 1er (27 jours), pas à celle du matin même");
+    "la sortie tardive est rattachée à l'entrée ANCIENNE, pas à celle du matin même");
 });
 
 test("peer : l'écart au profil déclaré, dans les deux sens, et 0 sans historique", () => {

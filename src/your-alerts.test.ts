@@ -17,6 +17,7 @@ import { rendreRapport, TROP_PEU_DE_SUSPECTS, NOTE_PETIT_N } from "./rapport.ts"
 import { scelleIntact, empreinteDuReleve } from "./empreinte.ts";
 import { ECHELLES } from "./assumptions.ts";
 import type { Registre, Scenario, PalierId } from "./scenario.ts";
+import { JOURS_HISTORIQUE, JOURS_FENETRE } from "./cas.ts";
 import type { Transaction } from "./cas.ts";
 
 /* ─── le registre factice, conforme à la couture ─── */
@@ -110,6 +111,9 @@ test("transactions : montant non positif refusé AVANT conversion, direction/cha
 /* ─── la reconstruction ─── */
 
 test("la fenêtre est les trente jours qui précèdent window_end, inclus ; l'historique va à 180 jours", () => {
+  /* Les nombres du titre sont TENUS par les constantes du contrat, pas récités. */
+  assert.equal(JOURS_FENETRE, 30);
+  assert.equal(JOURS_HISTORIQUE, 180);
   const txs: Transaction[] = [
     { ts: "2026-08-30T23:00:00Z", amount: 1, direction: "in", channel: "cash" },   /* dernier jour : dedans */
     { ts: "2026-08-01T00:00:00Z", amount: 2, direction: "in", channel: "cash" },   /* jour 1 de la fenêtre : dedans */
@@ -179,7 +183,7 @@ test("--volume se lit strictement : le motif refuse ce que Number() avalerait", 
 
 /* ─── les trois zones du rappel ─── */
 
-test("les trois zones : 4 suspects pas cités, 6 cités avec la note, 25 cités sans elle", () => {
+test("les zones du rappel : 4 suspects pas cités, 6 cités avec la note, 25 cités sans elle", () => {
   const rendu = (n: number) => rendreRapport(mesureDe(Array(n).fill(0.9), 30));
   const r4 = rendu(4);
   assert.match(r4, new RegExp(TROP_PEU_DE_SUSPECTS));

@@ -200,9 +200,13 @@ export function lireTransactions(texte: string): { parCompte: Map<string, Transa
   t.lignes.forEach((l, i) => {
     const ligne = t.numeros[i]!;
     const brutMontant = lire(l, "amount");
-    /* Le refus AVANT la conversion : Number("") vaut 0, et un vide converti d'abord
-       entrerait comme un montant lu. Le motif décide. */
-    if (!/^\d+(\.\d+)?$/.test(brutMontant) || Number(brutMontant) <= 0) { releve("a non-positive or unreadable amount", ligne); return; }
+    /* Le refus AVANT la conversion, structurellement : Number("") vaut 0, et un vide
+       converti d'abord entrerait comme un montant lu. Le motif décide, PUIS la
+       conversion ne voit que ce qu'il a accepté. */
+    if (brutMontant === "") { releve("a non-positive or unreadable amount", ligne); return; }
+    if (!/^\d+(\.\d+)?$/.test(brutMontant)) { releve("a non-positive or unreadable amount", ligne); return; }
+    const montant = Number(brutMontant);
+    if (montant <= 0) { releve("a non-positive or unreadable amount", ligne); return; }
     const direction = lire(l, "direction").toLowerCase();
     if (!DIRECTIONS.includes(direction as Direction)) { releve(`a direction outside ${DIRECTIONS.join("/")}`, ligne); return; }
     const channel = lire(l, "channel").toLowerCase();
@@ -212,7 +216,7 @@ export function lireTransactions(texte: string): { parCompte: Map<string, Transa
     const compte = lire(l, "account_id");
     if (compte === "") { releve("an empty account_id", ligne); return; }
     const pays = lire(l, "counterparty_country");
-    const tx: Transaction = { ts, amount: Number(brutMontant), direction: direction as Direction,
+    const tx: Transaction = { ts, amount: montant, direction: direction as Direction,
       channel: channel as Channel, ...(pays !== "" ? { country: pays } : {}) };
     parCompte.set(compte, [...(parCompte.get(compte) ?? []), tx]);
   });

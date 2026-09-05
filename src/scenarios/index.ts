@@ -6,10 +6,15 @@
  * rougi le jour où le palier est arrivé, le mauvais rouge).
  */
 import { PALIERS, type PalierId, type Registre, type Scenario } from "../scenario.ts";
+import { amount } from "./amount.ts";
+import { velocity } from "./velocity.ts";
+import { structuring } from "./structuring.ts";
+import { round } from "./round.ts";
+import { zscore } from "./zscore.ts";
+import { passthrough } from "./passthrough.ts";
+import { peer } from "./peer.ts";
 
-const SCENARIOS: Scenario[] = [
-  /* L1 : import { amount } from "./amount.ts"; … puis les sept ici, dans l'ordre du contrat */
-];
+const SCENARIOS: Scenario[] = [amount, velocity, structuring, round, zscore, passthrough, peer];
 
 export function registre(): Registre {
   const r = new Map<PalierId, Scenario>();

@@ -74,7 +74,12 @@ export type Assumptions = {
 export const ASSUMPTIONS: Assumptions = {
   seuilDeclaration: 10_000,
   echelleMontant: 20_000,
-  echelleVelocite: 60,
+  /* arbitrage du chef, 7/09, sur le constat de la mesure publique (L4) : à 60, la ligne
+     `velocity` était PLATE à 0 sur les 51 seuils, deux moitiés — aucun cas écrit ne
+     dépasse 20 transactions par fenêtre de trente jours (médiane 10). Réglée pour qu'une
+     fenêtre deux fois plus chargée que la médiane écrite note 0,63 ; assumed, bornée,
+     et toute retouche re-scelle le relevé. */
+  echelleVelocite: 15,
   joursStructuration: 7,
   joursPassage: 3,
   pairsMoyenne: 900,

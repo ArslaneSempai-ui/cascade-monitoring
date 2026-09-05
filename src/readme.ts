@@ -6,11 +6,13 @@
  *
  * Deux blocs pour commencer, la forme de cascade-routing :
  *   commandes  la table des commandes, dans l'ordre où elles ont un sens
- *   tests      « N tests across M files » compté DANS LES SOURCES, jamais recopié
+ *   tests      « N tests across M files » compté EN LANÇANT LA SUITE (les tests d'une boucle
+ *              n'existent qu'à l'exécution), les fichiers lus dans le script `test` ; jamais recopié
  *
  * Chaque commande ajoutée par un lot ajoute sa ligne ICI, pas dans le README : le README
  * suit. Un lot qui ajoute un test n'a rien à faire : le compte suit tout seul.
  */
+import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
@@ -58,13 +60,30 @@ const scriptTest = String(JSON.parse(
 if (extensionsLancees(scriptTest).length < 2) {
   throw new Error("the `test` script in package.json no longer names the test extensions it runs; the count would lie.");
 }
-const { n, fichiers } = compterLesCas(dossier, scriptTest);
-if (n < 5) throw new Error(`${n} tests counted across ${fichiers.length} file(s): the reading failed.`);
+const { n: nEcrits, fichiers } = compterLesCas(dossier, scriptTest);
+if (nEcrits < 5) throw new Error(`${nEcrits} tests counted across ${fichiers.length} file(s): the reading failed.`);
+
+/** Le compte que `npm test` IMPRIME : les tests écrits dans une boucle (un par scénario, un
+ *  par nature) n'existent qu'à l'exécution, et le lecteur qui lance la suite lit ce chiffre-là,
+ *  pas celui des `test(` dans les sources. Le 7/09 les sources en comptaient 95 quand la
+ *  suite en passait 110 : le README et le site publiaient un chiffre que la commande
+ *  invitée à vérifier contredisait. Une suite rouge ne publie aucun compte. */
+export function compterEnLancant(dossierSrc: string, fichiersTest: string[]): number {
+  const r = spawnSync(process.execPath, ["--test", "--test-reporter=tap", ...fichiersTest.map((f) => join(dossierSrc, f))],
+    { encoding: "utf8", env: process.env, maxBuffer: 64 * 1024 * 1024 });
+  const m = r.stdout.match(/^# tests (\d+)$/m);
+  if (!m) throw new Error(`the test run printed no \`# tests N\` line; the count would be a guess. stderr: ${r.stderr.slice(0, 400)}`);
+  if (r.status !== 0) throw new Error(`the suite fails (exit ${r.status}); no test count is published on a red suite.`);
+  return Number(m[1]);
+}
+
+const n = compterEnLancant(dossier, fichiers);
+if (n < nEcrits) throw new Error(`${n} tests ran but ${nEcrits} are written: a loop can only add tests, the reading failed.`);
 
 const blocs = {
   commandes: table(["Command", "What it does, in the order that makes sense"],
     COMMANDES.map(([c, quoi]) => [`\`${c}\``, quoi])),
-  tests: `**${n} tests** across ${fichiers.length} files, counted from the sources rather than typed here.`,
+  tests: `**${n} tests** across ${fichiers.length} files, counted by running the suite rather than typed here.`,
 };
 
 run(fileURLToPath(new URL("../README.md", import.meta.url)), blocs);

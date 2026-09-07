@@ -111,7 +111,7 @@ export function validerMoitie(cas: readonly CasEtiquete[], moitie: "authored" | 
   const nBenins = cas.length - nSuspects;
   if (nSuspects < ASSEZ_PAR_DISPOSITION || nBenins < ASSEZ_PAR_DISPOSITION) {
     throw new Error(`${moitie}: ${nSuspects} suspicious / ${nBenins} benign case(s): at least `
-      + `${ASSEZ_PAR_DISPOSITION} of EACH.\n  Below that, a rate here bounds nothing — and the missing side is`
+      + `${ASSEZ_PAR_DISPOSITION} of EACH.\n  Below that, a rate here bounds nothing, and the missing side is`
       + ` usually the benign look-alikes,\n  which are what the set is for.`);
   }
   const intrus = cas.filter((c) => (moitie === "authored") === c.id.includes("~v"));
@@ -143,14 +143,14 @@ export function construireReleve(
       absents: PALIERS.filter((p) => !r.has(p)),
     },
     authored: {
-      provenance: `written by hand in this repository: archetypes of suspicion and their benign look-alikes — ${PHRASE_PROVENANCE}`,
+      provenance: `written by hand in this repository: archetypes of suspicion and their benign look-alikes; ${PHRASE_PROVENANCE}`,
       nSuspicious: ecrits.filter(estSuspect).length,
       nBenign: ecrits.filter((c) => !estSuspect(c)).length,
       natures,
       tables: mesurerCas(r, ecrits, echelles),
     },
     synthetic: {
-      provenance: `seeded variants of the authored cases (seed ${GRAINE_PUBLIQUE}, ${VARIANTES_PAR_CAS} per case), structure preserved — ${PHRASE_PROVENANCE}`,
+      provenance: `seeded variants of the authored cases (seed ${GRAINE_PUBLIQUE}, ${VARIANTES_PAR_CAS} per case), structure preserved; ${PHRASE_PROVENANCE}`,
       nSuspicious: synthetiques.filter(estSuspect).length,
       nBenign: synthetiques.filter((c) => !estSuspect(c)).length,
       tables: mesurerCas(r, synthetiques, echelles),
@@ -202,22 +202,22 @@ function tableMd(tables: Record<string, TableDUnScenario>, quoi: "rappel" | "fau
 
 export function rapportMd(m: MesurePublique, recommandee: CellulePlacee | null): string {
   const l: string[] = [
-    `# Cascade Monitoring — the public measure`,
+    `# Cascade Monitoring: the public measure`,
     ``,
     `**Provenance**: ${PHRASE_PROVENANCE}. Cases written by this repository (archetypes of`,
     `suspicion and their benign look-alikes) plus seeded, structure-preserving variants,`,
     `measured APART and never merged. Commit \`${m.commit}\`, ${m.date}. Sealed as`,
     `\`releve-public.json\`; every rate below carries its n and its 95 % Wilson interval, and`,
-    `the FULL threshold grid (${SEUILS.length} steps) lives in the JSON — this page shows`,
+    `the FULL threshold grid (${SEUILS.length} steps) lives in the JSON; this page shows`,
     `${SEUILS_MONTRES.length} declared columns of it. The record also carries the declared scales it was`,
     `measured under (\`echelles\`): change a scale and the scores move with it.`,
     ``,
     `Scenarios measured: ${m.paliers.presents.map((p) => `\`${p}\``).join(", ")}.`
     + (m.paliers.absents.length
-      ? ` **Not in tonight's registry: ${m.paliers.absents.map((p) => `\`${p}\``).join(", ")}** — measured when it ships, absent rather than faked.`
+      ? ` **Not in tonight's registry: ${m.paliers.absents.map((p) => `\`${p}\``).join(", ")}**. Measured when it ships, absent rather than faked.`
       : ` An eighth, learned scenario is named ABSENT from day one: it will come or it will not, it will never be guessed.`),
     ``,
-    `## Written cases (authored) — ${m.authored.nSuspicious} suspicious, ${m.authored.nBenign} benign`,
+    `## Written cases (authored): ${m.authored.nSuspicious} suspicious, ${m.authored.nBenign} benign`,
     ``,
     `The set's value is its benign look-alikes: a payroll looks like rapid movement from afar.`,
     `Natures: ${Object.entries(m.authored.natures).map(([k, n]) => `${k} x${n}`).join(", ")}.`,
@@ -226,7 +226,7 @@ export function rapportMd(m: MesurePublique, recommandee: CellulePlacee | null):
     ``, tableMd(m.authored.tables, "rappel"), ``,
     `### False alerts on the benign look-alikes (every point is an analyst's minutes)`,
     ``, tableMd(m.authored.tables, "fauxPositifs"), ``,
-    `## Generated variants (synthetic) — ${m.synthetic.nSuspicious} suspicious, ${m.synthetic.nBenign} benign`,
+    `## Generated variants (synthetic): ${m.synthetic.nSuspicious} suspicious, ${m.synthetic.nBenign} benign`,
     ``,
     `Seeded, declared, never merged with the written set.`,
     ``, `### Recall`, ``, tableMd(m.synthetic.tables, "rappel"), ``,
@@ -236,7 +236,7 @@ export function rapportMd(m: MesurePublique, recommandee: CellulePlacee | null):
     recommandee
       ? `Under a recall LOWER BOUND of ${(ASSUMPTIONS.recallFloor * 100).toFixed(0)} % on the written cases, then fewest false`
         + ` alerts, then fewest alerts raised, then the cheaper scenario, then the stricter threshold:`
-        + ` \`${recommandee.palier}\` at threshold ${recommandee.seuil.toFixed(2)} — recall ${pc(cellule(recommandee.rappel))},`
+        + ` \`${recommandee.palier}\` at threshold ${recommandee.seuil.toFixed(2)}; recall ${pc(cellule(recommandee.rappel))},`
         + ` false alerts ${pc(cellule(recommandee.faussesAlertes))}. The rule is \`optimise\`'s, imported, not restated.`
       : `No cell holds a recall lower bound of ${(ASSUMPTIONS.recallFloor * 100).toFixed(0)} % on the written cases: said, not hidden.`,
     ``,
@@ -257,7 +257,7 @@ export function exigerDroitDEcraser(cheminJson: string, argv: readonly string[])
   if (!existsSync(cheminJson)) return;
   const existant = JSON.parse(readFileSync(cheminJson, "utf8")) as Record<string, unknown>;
   if (scelleIntact(existant) && !argv.includes("--yes-overwrite")) {
-    throw new Error(`releve-public.json exists, sealed and intact — it is the PUBLISHED record.\n`
+    throw new Error(`releve-public.json exists, sealed and intact: it is the PUBLISHED record.\n`
       + `  A published figure does not move because a command was re-run by accident.\n`
       + `  To remeasure and replace it, say so: npm run measure -- --yes-overwrite`);
   }

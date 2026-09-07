@@ -36,7 +36,7 @@ export const SEUILS_MONTRES: readonly number[] = [0.50, 0.60, 0.70, 0.75, 0.80, 
  * régime général de `cellulesDeTaux`.
  */
 function celluleRappel(c: Cellule, suspects: number): { taux: string; intervalle: string } {
-  if (suspects < MINIMUM_SUSPECTS) return { taux: `— ${TROP_PEU_DE_SUSPECTS}`, intervalle: `n=${suspects}` };
+  if (suspects < MINIMUM_SUSPECTS) return { taux: `n/a: ${TROP_PEU_DE_SUSPECTS}`, intervalle: `n=${suspects}` };
   const r = rate(c.rappel.successes, c.rappel.n);
   if (r.reportable) return cellulesDeTaux(r);
   return {
@@ -58,7 +58,7 @@ export function rendreRapport(m: MesureAlertes): string {
   l.push(``);
   l.push(`- confirmed suspicious: ${m.source.suspicious}`);
   l.push(`- benign (closed without action): ${m.source.benign}`);
-  l.push(`- cases with no transaction before their window: ${m.source.sansHistorique} — the relative`);
+  l.push(`- cases with no transaction before their window: ${m.source.sansHistorique}; the relative`);
   l.push(`  scenarios (zscore, peer) score 0 there; the count travels with the rates rather than`);
   l.push(`  dissolving into them.`);
   if (m.source.periode && m.source.periode.from) {
@@ -67,11 +67,11 @@ export function rendreRapport(m: MesureAlertes): string {
       + (m.source.periode.illisibles ? `; ${m.source.periode.illisibles} unreadable date(s), counted, not hidden` : "")
       + `)`);
   } else {
-    l.push(`- period: not measured — no readable decided_at column. Monthly figures downstream need it.`);
+    l.push(`- period: not measured; no readable decided_at column. Monthly figures downstream need it.`);
   }
   l.push(m.volume
     ? `- accounts monitored per month: ${m.volume.n} (declared with --volume)`
-    : `- accounts monitored per month: not supplied — the alerts-per-thousand column does not appear; it is never estimated in silence.`);
+    : `- accounts monitored per month: not supplied. The alerts-per-thousand column does not appear; it is never estimated in silence.`);
   l.push(``);
   l.push(`One limit, stated up front: this history contains only the alerts your CURRENT programme`);
   l.push(`raised and your analysts dispositioned. A pattern nobody ever alerted on is invisible to`);
@@ -81,12 +81,12 @@ export function rendreRapport(m: MesureAlertes): string {
 
   /* ── 2 · la grille ── */
   l.push(`## The frontier, scenario by scenario`, ``);
-  l.push(`Thresholds shown: ${SEUILS_MONTRES.map((s) => s.toFixed(2)).join(", ")} — the full grid of`);
+  l.push(`Thresholds shown: ${SEUILS_MONTRES.map((s) => s.toFixed(2)).join(", ")}; the full grid of`);
   l.push(`${SEUILS.length} lives in the sealed record beside this file.`);
   l.push(``);
   const paliers = Object.entries(m.paliers).sort(([, a], [, b]) => a!.rang - b!.rang);
   for (const [id, p] of paliers) {
-    l.push(`### ${cellule(id)} — ${p!.description}`, ``);
+    l.push(`### ${cellule(id)} (${p!.description})`, ``);
     const entetes = ["threshold", "alerts raised", `recall (n=${m.source.suspicious})`, "interval",
       `false alerts (n=${m.source.benign})`, "interval"];
     if (m.volume) entetes.push("per 1000 accounts");
@@ -120,14 +120,14 @@ export function rendreRapport(m: MesureAlertes): string {
   } else {
     const c = meilleureSousRappel(cellulesDe(m), ASSUMPTIONS.recallFloor);
     l.push(`The rule of the tool: recall lower bound at or above ${ligneDHypothese("recallFloor")},`);
-    l.push(`then the fewest false alerts — yours to set with \`optimise -- --recall=<min>\`.`);
+    l.push(`then the fewest false alerts; yours to set with \`optimise -- --recall=<min>\`.`);
     l.push(``);
     if (!c) {
       l.push(`No cell holds a recall lower bound of ${ASSUMPTIONS.recallFloor} on this sample`);
       l.push(`(${m.source.suspicious} confirmed suspicious). Lower the floor knowingly, or measure a`);
-      l.push(`longer window of history — the bound tightens with n.`);
+      l.push(`longer window of history: the bound tightens with n.`);
     } else {
-      l.push(`Fewest false alerts with the bound held: ${cellule(c.palier)} at threshold ${c.seuil.toFixed(2)} — `
+      l.push(`Fewest false alerts with the bound held: ${cellule(c.palier)} at threshold ${c.seuil.toFixed(2)}; `
         + `${c.faussesAlertes.successes} false alert(s) of ${c.faussesAlertes.n} benign case(s), `
         + `${c.tirees} of ${m.source.alerts} historical alerts raised, recall `
         + `${(c.rappel.rate * 100).toFixed(1)} % [${(c.rappel.low * 100).toFixed(0)}–${(c.rappel.high * 100).toFixed(0)}], n=${c.rappel.n}.`);
@@ -135,7 +135,7 @@ export function rendreRapport(m: MesureAlertes): string {
       const h = heuresDAnalyste(economisees);
       l.push(``);
       l.push(`Against your current programme's history: ${economisees} alert(s) fewer over the file's`);
-      l.push(`period — ${h.heures.toFixed(1)} analyst hour(s), ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)}, computed from assumptions shown here:`);
+      l.push(`period, ${h.heures.toFixed(1)} analyst hour(s), ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)}, computed from assumptions shown here:`);
       l.push(`- ${ligneDHypothese("minutesPerAlert")}`);
       l.push(`- ${ligneDHypothese("analystAnnualCost")}, over ${ASSUMPTIONS.workingDaysPerYear} days/year × ${ASSUMPTIONS.productiveHoursPerDay} h/day`);
       const suivant = m.paliers[c.palier]!.cellules.find((x) => x.seuil === Math.round((c.seuil + 0.01) * 100) / 100);
@@ -143,7 +143,7 @@ export function rendreRapport(m: MesureAlertes): string {
         const dr = celluleRappel(suivant, m.source.suspicious);
         l.push(``);
         l.push(`The next step (threshold ${suivant.seuil.toFixed(2)}) would drop ${c.tirees - suivant.tirees} more alert(s)`);
-        l.push(`and put the recall at ${dr.taux} ${dr.intervalle} — what tightening costs, before you pay it.`);
+        l.push(`and put the recall at ${dr.taux} ${dr.intervalle}: what tightening costs, before you pay it.`);
       }
     }
   }
@@ -152,8 +152,8 @@ export function rendreRapport(m: MesureAlertes): string {
   /* ── 4 · la robustesse synthétique, à part ── */
   l.push(`## Synthetic robustness, kept apart`, ``);
   l.push(`Not measured in this run: no real transaction is public, so the public record of this`);
-  l.push(`tool is ENTIRELY fabricated — authored archetypes of suspicion with their benign`);
-  l.push(`look-alikes, plus seeded variants — and it says so on every figure. It never merges`);
+  l.push(`tool is ENTIRELY fabricated (authored archetypes of suspicion with their benign`);
+  l.push(`look-alikes, plus seeded variants) and it says so on every figure. It never merges`);
   l.push(`with the rates above: your history measures your programme's reality, the fabricated`);
   l.push(`cases measure what a scenario can see at all. Provenance keeps the words apart:`);
   l.push(`those figures are \`synthetic\` or \`authored\`, never \`measured\`.`);
@@ -166,11 +166,11 @@ export function rendreRapport(m: MesureAlertes): string {
     .map((k) => ligneDHypothese(k)).join("; ")}.`);
   l.push(`- the scales above are the ones THIS record was measured under; the sealed record`);
   l.push(`  snapshots them, because changing a scale changes every score.`);
-  l.push(`- seal: ${m.empreinte ?? "(sealed after rendering — see the .json beside this file)"} · `
+  l.push(`- seal: ${m.empreinte ?? "(sealed after rendering; see the .json beside this file)"} · `
     + `measured ${m.measuredAt.slice(0, 10)}`
     + (m.code ? ` · code at commit ${m.code.commit}` : ""));
   l.push(``);
-  l.push(`No value from your files — no account_id, no amount, no transaction date, no country —`);
+  l.push(`No value from your files (no account_id, no amount, no transaction date, no country)`);
   l.push(`appears in this report or in the sealed record; verdicts are keyed by your alert_id and`);
   l.push(`carry scores only. The alert ids and the file names are yours and DO survive: choose`);
   l.push(`them opaque.`);

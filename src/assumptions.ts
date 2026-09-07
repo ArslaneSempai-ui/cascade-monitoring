@@ -167,7 +167,7 @@ export const ECHELLES: Echelles = {
  */
 export function symboleDe(unite: string): string {
   if (unite.startsWith("usd")) return "$";
-  throw new Error(`no display symbol declared for unit "${unite}" — declare it here rather than typing one at the render site.`);
+  throw new Error(`no display symbol declared for unit "${unite}": declare it here rather than typing one at the render site.`);
 }
 
 /** Ce qu'une heure d'analyste coûte, dérivé des hypothèses — jamais tapé ailleurs. */

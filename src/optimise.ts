@@ -107,7 +107,7 @@ export function lireReleve(chemin: string): MesureAlertes {
 export function lireRappelMin(brut: string): number {
   if (!/^(0(\.\d+)?|1(\.0+)?)$/.test(brut)) {
     throw new Error(`--recall=${brut} is not a recall this tool reads. It wants a number\n`
-      + `  between 0 and 1, like --recall=0.90 — the floor your compliance committee owns.`);
+      + `  between 0 and 1, like --recall=0.90: the floor your compliance committee owns.`);
   }
   return Number(brut);
 }
@@ -162,7 +162,7 @@ The record comes from: npm run measure:yours -- --alerts=<csv> --transactions=<c
 
   const m = lireReleve(chemin);
   const cellules = cellulesDe(m);
-  console.log(`\n${m.source.alerts} alert(s) measured on ${m.measuredAt.slice(0, 10)}, seal ${m.empreinte} — `
+  console.log(`\n${m.source.alerts} alert(s) measured on ${m.measuredAt.slice(0, 10)}, seal ${m.empreinte}: `
     + `${Object.keys(m.paliers).length} scenario(s) × ${new Set(cellules.map((c) => c.seuil)).size} thresholds.`);
   if (m.absents.length) console.log(`contract scenario(s) absent from that record: ${m.absents.join(", ")}`);
 
@@ -182,7 +182,7 @@ The record comes from: npm run measure:yours -- --alerts=<csv> --transactions=<c
         + `(${m.source.suspicious} confirmed suspicious).`);
       console.error(borne === null
         ? `  No cell has enough confirmed cases to bound recall at all.`
-        : `  The strongest bound available is ${(borne * 100).toFixed(0)} % — lower the floor,`
+        : `  The strongest bound available is ${(borne * 100).toFixed(0)} %: lower the floor,`
           + ` or measure a wider window.`);
       console.error("");
       process.exit(1);
@@ -192,7 +192,7 @@ The record comes from: npm run measure:yours -- --alerts=<csv> --transactions=<c
     const economisees = m.source.alerts - c.tirees;
     const h = heuresDAnalyste(economisees);
     console.log(`\nAgainst your current programme's history: ${economisees} alert(s) fewer over the`);
-    console.log(`file's period, ${h.heures.toFixed(1)} analyst hour(s), ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)} — computed from:`);
+    console.log(`file's period, ${h.heures.toFixed(1)} analyst hour(s), ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)}, computed from:`);
     console.log(`  ${ligneDHypothese("minutesPerAlert")}`);
     console.log(`  ${ligneDHypothese("analystAnnualCost")} over ${ASSUMPTIONS.workingDaysPerYear} days × ${ASSUMPTIONS.productiveHoursPerDay} h`);
     console.log(`Change the assumptions and the dollars move; the recall bound does not.\n`);
@@ -223,7 +223,7 @@ The record comes from: npm run measure:yours -- --alerts=<csv> --transactions=<c
   }
   console.log(`  alerts per month at this cell   ${(c.tirees * (30 / m.source.periode.jours)).toFixed(0)}`);
   const h = heuresDAnalyste(c.tirees * (30 / m.source.periode.jours));
-  console.log(`\nClearing them costs ${h.heures.toFixed(1)} analyst hour(s) per month, ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)} — computed from:`);
+  console.log(`\nClearing them costs ${h.heures.toFixed(1)} analyst hour(s) per month, ${symboleDe(UNITS.analystAnnualCost)}${h.usd.toFixed(0)}, computed from:`);
   console.log(`  ${ligneDHypothese("minutesPerAlert")}`);
   console.log(`  ${ligneDHypothese("analystAnnualCost")} over ${ASSUMPTIONS.workingDaysPerYear} days × ${ASSUMPTIONS.productiveHoursPerDay} h\n`);
 }

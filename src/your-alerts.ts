@@ -68,7 +68,7 @@ function colonnes(noms: readonly string[], requises: readonly string[], optionne
       `Your ${quoi} header carries ${inconnues.length} column(s) this command does not know: `
       + `${apercu(inconnues.map((n) => `"${n}"`), MONTRES)}.\n`
       + `  Accepted: ${requises.join(", ")}`
-      + (optionnelles.length ? ` — then, optionally: ${optionnelles.join(", ")}.` : ".")
+      + (optionnelles.length ? `; then, optionally: ${optionnelles.join(", ")}.` : ".")
       + `\n  Left as they were, unknown columns would be read as something else or dropped in\n`
       + `  silence, and the rates would answer a different question than the one you asked.`);
   }
@@ -111,7 +111,7 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
     throw new Error(
       `${horsVocabulaire.length} alert row(s) carry a disposition outside the vocabulary: ${montre}.\n`
       + `  This tool reads exactly two: "suspicious" (confirmed, escalated or filed) and\n`
-      + `  "benign" (closed without action). Anything else — pending, a typo — has no place\n`
+      + `  "benign" (closed without action). Anything else (pending, a typo) has no place\n`
       + `  in either rate, and guessing a side would move the figure you publish.\n`
       + `  Map your dispositions to these two, or drop the undecided rows.`);
   }
@@ -454,11 +454,11 @@ ${JOURS_HISTORIQUE} days before (for the relative scenarios):
   account_id,ts,amount,direction,channel[,counterparty_country]
 
 --volume=N supplies the accounts monitored per month; without it, alerts-per-thousand
-is not shown — never estimated in silence.
+is not shown: never estimated in silence.
 
 It writes, next to your alerts file and nowhere else:
   <file>-measured.md     the report (no account, no amount, no date of yours)
-  <file>-measured.json   the sealed record — counts, rates, verdicts by alert_id
+  <file>-measured.json   the sealed record: counts, rates, verdicts by alert_id
 
 Then: npm run optimise -- --from=<file>-measured.json --recall=0.90
 Nothing about your files leaves this machine.
@@ -478,12 +478,12 @@ Nothing about your files leaves this machine.
   const { mesure, cheminMd, cheminJson, avertissements } = executer(cheminAlertes, cheminTx, registre, volume);
   for (const a of avertissements) console.warn(`⚠ ${a}`);
 
-  console.log(`\n${mesure.source.alerts} alert(s) — ${mesure.source.suspicious} suspicious, `
+  console.log(`\n${mesure.source.alerts} alert(s): ${mesure.source.suspicious} suspicious, `
     + `${mesure.source.benign} benign, ${mesure.source.sansHistorique} without history; `
     + `${Object.keys(mesure.paliers).length} scenario(s), ${SEUILS.length} thresholds each.`);
   if (mesure.absents.length) {
     console.log(`  ${mesure.absents.length} contract scenario(s) not in the registry: `
-      + `${mesure.absents.join(", ")} — said in the report, not guessed.`);
+      + `${mesure.absents.join(", ")}; said in the report, not guessed.`);
   }
   console.log(`  ${cheminMd}`);
   console.log(`  ${cheminJson}`);

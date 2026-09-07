@@ -10,7 +10,7 @@ vendor's setting". This tool measures it: several scenarios, from a bare amount 
 deviation from a peer profile, are replayed over the alerts your analysts already
 dispositioned, each alert rebuilt into a thirty-day case from your own transactions, and
 each scenario × threshold cell is read for recall on confirmed suspicious cases, false-alert
-rate on benign ones and alerts per thousand accounts — with its count and its interval, or
+rate on benign ones and alerts per thousand accounts, with its count and its interval, or
 not at all.
 
 No real transaction is public, so the public record of this tool is entirely written and
@@ -24,14 +24,14 @@ It is the third tool of the Cascade suite, after [cascade-routing](https://githu
 <!-- figures:commandes -->
 | Command | What it does, in the order that makes sense |
 |---|---|
-| `npm ci --ignore-scripts` | install exactly the versions the lockfile pins, and run no install script from any dependency — the only command that needs the network: this tool downloads nothing else, ever |
-| `npm run test` | types, the README blocks, the licence inventory, and the suite — start here; it runs with the network cut |
-| `npm run measure [-- --yes-overwrite]` | the public measure: every scenario at every threshold on cases we wrote (benign look-alikes included) plus declared generated variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md` — no real transaction is public, and the record says so; it refuses to overwrite a sealed one without the flag |
+| `npm ci --ignore-scripts` | install exactly the versions the lockfile pins, and run no install script from any dependency; the only command that needs the network: this tool downloads nothing else, ever |
+| `npm run test` | types, the README blocks, the licence inventory, and the suite. Start here; it runs with the network cut |
+| `npm run measure [-- --yes-overwrite]` | the public measure: every scenario at every threshold on cases we wrote (benign look-alikes included) plus declared generated variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md`: no real transaction is public, and the record says so; it refuses to overwrite a sealed one without the flag |
 | `npm run measure:yours -- --alerts=<csv> --transactions=<csv> [--volume=N]` | your own dispositioned alerts, rebuilt into thirty-day cases from your transactions: recall on confirmed suspicious cases and false-alert rate on benign ones per scenario and threshold, with n and interval; a sealed record and a report beside your file, never a value of yours |
 | `npm run optimise -- --from=<record> --recall=<min>` | the frontier: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget |
-| `npm run sceller -- <record.json>` | seal a record: the fingerprint that makes a silently edited measurement fail loudly — the same fingerprint as cascade-routing |
+| `npm run sceller -- <record.json>` | seal a record: the fingerprint that makes a silently edited measurement fail loudly; the same fingerprint as cascade-routing |
 | `npm run verify -- <report>` | check that a report was issued by the holder of the suite's public key, `cle-publique.pem`, without asking us |
-| `npm run licences` | regenerate `LICENCES.md`, the licence of every shipped package — `--check` fails the suite when the table drifts |
+| `npm run licences` | regenerate `LICENCES.md`, the licence of every shipped package; `--check` fails the suite when the table drifts |
 <!-- /figures:commandes -->
 
 ## Requirements
@@ -60,7 +60,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**110 tests** across 11 files, counted by running the suite rather than typed here.
+**114 tests** across 13 files, counted by running the suite rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence

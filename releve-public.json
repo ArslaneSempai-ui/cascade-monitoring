@@ -1,7 +1,7 @@
 {
  "version": 1,
- "date": "2026-09-05",
- "commit": "2fa9f51",
+ "date": "2026-09-07",
+ "commit": "85f8a11",
  "paliers": {
   "presents": [
    "amount",
@@ -15,7 +15,7 @@
   "absents": []
  },
  "authored": {
-  "provenance": "written by hand in this repository: archetypes of suspicion and their benign look-alikes — no real transaction is public: written and generated, and it says so",
+  "provenance": "written by hand in this repository: archetypes of suspicion and their benign look-alikes; no real transaction is public: written and generated, and it says so",
   "nSuspicious": 42,
   "nBenign": 42,
   "natures": {
@@ -5762,7 +5762,7 @@
   }
  },
  "synthetic": {
-  "provenance": "seeded variants of the authored cases (seed 20260907, 3 per case), structure preserved — no real transaction is public: written and generated, and it says so",
+  "provenance": "seeded variants of the authored cases (seed 20260907, 3 per case), structure preserved; no real transaction is public: written and generated, and it says so",
   "nSuspicious": 126,
   "nBenign": 126,
   "tables": {
@@ -11505,5 +11505,5 @@
    "ecartType": 1200
   }
  },
- "empreinte": "692d499018e53e07"
+ "empreinte": "5e2a96e22fa0b59c"
 }

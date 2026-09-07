@@ -1,16 +1,16 @@
-# Cascade Monitoring — the public measure
+# Cascade Monitoring: the public measure
 
 **Provenance**: no real transaction is public: written and generated, and it says so. Cases written by this repository (archetypes of
 suspicion and their benign look-alikes) plus seeded, structure-preserving variants,
-measured APART and never merged. Commit `2fa9f51`, 2026-09-05. Sealed as
+measured APART and never merged. Commit `85f8a11`, 2026-09-07. Sealed as
 `releve-public.json`; every rate below carries its n and its 95 % Wilson interval, and
-the FULL threshold grid (51 steps) lives in the JSON — this page shows
+the FULL threshold grid (51 steps) lives in the JSON; this page shows
 8 declared columns of it. The record also carries the declared scales it was
 measured under (`echelles`): change a scale and the scores move with it.
 
 Scenarios measured: `amount`, `velocity`, `structuring`, `round`, `zscore`, `passthrough`, `peer`. An eighth, learned scenario is named ABSENT from day one: it will come or it will not, it will never be guessed.
 
-## Written cases (authored) — 42 suspicious, 42 benign
+## Written cases (authored): 42 suspicious, 42 benign
 
 The set's value is its benign look-alikes: a payroll looks like rapid movement from afar.
 Natures: structuring x7, rapid-movement x7, dormant-burst x7, round-tripping x7, cash-intensive x7, layering-fan-out x7, payroll x7, seasonal-trade x7, loan-repayment x7, rent-collection x7, savings-transfer x7, one-off-purchase x7.
@@ -39,7 +39,7 @@ Natures: structuring x7, rapid-movement x7, dormant-burst x7, round-tripping x7,
 | `passthrough` | 17% [8-31] | 14% [7-28] | 2% [0-12] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] |
 | `peer` | 17% [8-31] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] | 0% [0-8] |
 
-## Generated variants (synthetic) — 126 suspicious, 126 benign
+## Generated variants (synthetic): 126 suspicious, 126 benign
 
 Seeded, declared, never merged with the written set.
 
